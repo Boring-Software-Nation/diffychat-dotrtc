@@ -1,0 +1,29 @@
+<html>
+<body>
+
+
+<div id="tplAuth">
+	Private key:
+	<input id="phrase" value="">
+	<button onclick="app.auth();">Auth</button>
+</div>
+
+<div id="tplConnector" style="display: none;">
+	Connect To:
+	<input id="to" value="">
+	<button onclick="app.connect();">Connect</button>
+</div>
+
+<div id="tplMsg" style="display: none;">
+	Message:
+	<input id="msg" value="">
+	<button onclick="app.sendMessage();">Send</button>
+</div>
+
+<div>Log</div>
+<div id="log" style="border: 1px solid black; padding: 10px;"></div>
+
+<script src="./build/index.js"></script>
+
+</body>
+</html>
