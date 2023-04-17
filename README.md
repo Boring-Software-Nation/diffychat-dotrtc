@@ -13,7 +13,7 @@ This library allows you to establish p2p connections between Polkadot accounts a
 To work with DOTRTC, you first need to create a keyring, under which the account will connect to other accounts:
 
     import {Keyring} from '@polkadot/api';
-    const accountKeyring = (new Keyring({type: 'sr25519'})).addFromUri(`<secret phrase>`);  //keyring of your wallet
+    const accountKeyring = (new Keyring({type: 'ed25519'})).addFromUri(`<secret phrase>`);  //keyring of your wallet
 
 Next, you can create a DOTRTC instance with the necessary settings and specify event handlers (connection request, successful connection, disconnection):
 
