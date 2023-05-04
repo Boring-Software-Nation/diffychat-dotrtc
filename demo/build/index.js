@@ -56411,12 +56411,9 @@
 			return new Promise(resolve => {
 				console.log('[bch register]');
 				this.#readyState.onReady(() => {
-					console.log('edAddr:', edAddr);
 					const usernameBin = new BinData(21);
 					usernameBin.setUint8(username.length);
 					usernameBin.setString(username);
-					console.log('usernameBin:', usernameBin.uint8Array);
-					console.log('addrBin:', edAddr.publicKey);
 					this.#client.tx.templateModule.register(usernameBin.uint8Array, edAddr.publicKey).signAndSend(this.#srKeyring, ({
 																																	  events = [],
 																																	  status
@@ -56905,8 +56902,10 @@
 			return this.#bConn.getUsername(addr);
 		}
 
-		register(username, addr) {
-			return this.#bConn.register(username, addr);
+		register(username) {
+			const edKeyring = new Keyring({type: 'ed25519'});
+			const accountEdKeyring = edKeyring.addFromUri(this.#cfg.phrase);
+			return this.#bConn.register(username, accountEdKeyring);
 		}
 
 		/**
@@ -56976,6 +56975,7 @@
 				this.#p2p = new DOTRTC({
 					phrase: $phrase.value,
 					onConnectionRequest: connection => {
+						$tplConnector.style.display = 'none';
 						this.addLog(`<b>${connection.remoteAddress}</b> try connect to me`);
 						connection.accept();
 					},
@@ -56993,9 +56993,6 @@
 					}
 				});
 
-				console.log('call register');
-				//const edKeyring = new Keyring({type: 'ed25519'});
-				//const accountEdKeyring = edKeyring.addFromUri($phrase.value);
 				this.#p2p.getUsername(this.#accountSrKeyring).then((username) => {
 					if (username) {
 						this.addLog('auth as: ' + username);
@@ -57011,10 +57008,7 @@
 			$tplRegister.style.display = 'none';
 			this.addLog('registration username: ' + $username.value);
 
-			const edKeyring = new Keyring({type: 'ed25519'});
-			const accountEdKeyring = edKeyring.addFromUri($phrase.value);
-
-			this.#p2p.register($username.value, accountEdKeyring).then(() => {
+			this.#p2p.register($username.value).then(() => {
 				this.addLog('username registered');
 				$tplConnector.style.display = 'block';
 			});

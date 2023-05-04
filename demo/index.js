@@ -28,6 +28,7 @@ window.app = new (class App {
 			this.#p2p = new DOTRTC({
 				phrase: $phrase.value,
 				onConnectionRequest: connection => {
+					$tplConnector.style.display = 'none';
 					this.addLog(`<b>${connection.remoteAddress}</b> try connect to me`);
 					connection.accept();
 				},
@@ -60,10 +61,7 @@ window.app = new (class App {
 		$tplRegister.style.display = 'none';
 		this.addLog('registration username: ' + $username.value);
 
-		const edKeyring = new Keyring({type: 'ed25519'});
-		const accountEdKeyring = edKeyring.addFromUri($phrase.value);
-
-		this.#p2p.register($username.value, accountEdKeyring).then(() => {
+		this.#p2p.register($username.value).then(() => {
 			this.addLog('username registered');
 			$tplConnector.style.display = 'block';
 		});

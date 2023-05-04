@@ -128,12 +128,9 @@ const Blockchain = class Blockchain {
 		return new Promise(resolve => {
 			console.log('[bch register]');
 			this.#readyState.onReady(() => {
-				console.log('edAddr:', edAddr);
 				const usernameBin = new BinData(21);
 				usernameBin.setUint8(username.length);
 				usernameBin.setString(username);
-				console.log('usernameBin:', usernameBin.uint8Array);
-				console.log('addrBin:', edAddr.publicKey);
 				this.#client.tx.templateModule.register(usernameBin.uint8Array, edAddr.publicKey).signAndSend(this.#srKeyring, ({
 																																  events = [],
 																																  status

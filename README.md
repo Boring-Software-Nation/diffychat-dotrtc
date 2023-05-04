@@ -22,10 +22,14 @@ When creating a DOTRTC instance, you must specify a successful connection handle
         console.log('connection established with:', channel.remoteAddress);
     }
 
+You can assign a nickname to your wallet. Other users will connect to you using this username:
+
+    p2p.register('<USERNAME>');
+
 Create a p2p connection to the account by his DOT address:
 
     p2p.connect({
-        to: '<DOT ADDRESS>'
+        to: '<USERNAME>'
     });
 
 After that, the onConnectionRequest event will fire for the user they are trying to connect to, in which a connection request will come.

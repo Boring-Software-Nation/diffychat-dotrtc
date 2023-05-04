@@ -77,8 +77,10 @@ const DOTRTC = class DOTRTC {
 		return this.#bConn.getUsername(addr);
 	}
 
-	register(username, addr) {
-		return this.#bConn.register(username, addr);
+	register(username) {
+		const edKeyring = new Keyring({type: 'ed25519'});
+		const accountEdKeyring = edKeyring.addFromUri(this.#cfg.phrase);
+		return this.#bConn.register(username, accountEdKeyring);
 	}
 
 	/**
