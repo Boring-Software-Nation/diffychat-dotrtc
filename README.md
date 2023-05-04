@@ -1,28 +1,15 @@
-# DOTRTC library for Diffy chat messenger
+# Intro
 
-The aim of this project is to develop a secured decentralized messenger that doesn’t store data on a centralized backend and uses personal Polkadot wallet credentials for chatting initiation and messaging.
-
-P2p channels between users are set using WebRTC. This Substrate pallet is used for exchanging SDP offers. For address discovery of NAT users any public STUN server can be used. All messages between users are encrypted with user’s public keys. This pallet also includes a “contacts” feature: a user is able to tie names to wallet addresses and organize his contacts in a common way.
-
-![image](https://user-images.githubusercontent.com/126072104/220610232-0b9a4033-97cc-44ba-8948-a610b2b0c4bf.png)
-
-This library allows you to establish p2p connections between Polkadot accounts and instantly exchange data in both directions.
+This library allows you to establish p2p connections between polkadot accounts and instantly exchange data in both directions.
 
 # Usage:
 
-To work with DOTRTC, you first need to create a keyring, under which the account will connect to other accounts:
-
-    import {Keyring} from '@polkadot/api';
-    const accountKeyring = (new Keyring({type: 'ed25519'})).addFromUri(`<secret phrase>`);  //keyring of your wallet
-
-Next, you can create a DOTRTC instance with the necessary settings and specify event handlers (connection request, successful connection, disconnection):
+You can create a DOTRTC instance with the necessary settings and specify event handlers (connection request, successful connection, disconnection):
 
     const p2p = new DOTRTC({
         iceServer:      string,                 //Stun or turn server (https://datatracker.ietf.org/doc/html/rfc8445), example: `stun:stun.services.mozilla.com`
-        chunkSize:      integer                 //All packets sent will be split into small packets of this size in bytes (example 65535)
-                                                //This is necessary so as not to clog the entire channel when sending a large amount of data.
         endpoint:       string                  //Endpoint of parachain node, for example `wss://diffy.bsn.si`
-        keyring: accountKeyring,                //Keyring of your wallet
+        phrase:         string,                 //Secret phrase
         onConnectionRequest: function() {...}   //Handler that will be called when someone tries to connect to you
         onConnect: function() {...}             //Handler that will be called when a connection is successfully established with someone
         onDisconnect: function() {...}          //Handler will be called when the connection is broken (the remote user forcibly disconnected, or may be caused by problems with the Internet connection)
@@ -57,7 +44,3 @@ The `channel` object has the following methods:
     channel.onMessage(payload => {                  //payload is Uint8Array
         console.log(data);
     });
-
-## Related repos
-
-- [Diffy chat Substrate Node pallet](https://github.com/Belsoft-rs/diffychat-pallet)

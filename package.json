@@ -1,7 +1,10 @@
 {
-	"author": "Timeliquid",
+	"author": "Belsoft",
 	"version": "1.0.1",
-	"main": "dottest.js",
+	"main": "./src/DOTRTC.js",
+	"scripts": {
+		"test": "jest"
+	},
 	"engines": {
 		"node": "*"
 	},
@@ -9,7 +12,6 @@
 		"@lopatnov/rollup-plugin-uglify": "^2.1.5",
 		"@polkadot/api": "10.1.3",
 		"@polkadot/util-crypto": "^11.0.2",
-		"js-chacha20": "^1.1.0",
 		"pool-handlers": "^1.0.2",
 		"states-manager": "^1.0.2"
 	},
@@ -17,6 +19,8 @@
 	"devDependencies": {
 		"@rollup/plugin-commonjs": "^21.0.1",
 		"@rollup/plugin-node-resolve": "^13.1.3",
-		"rollup": "^2.63.0"
+		"rollup": "^2.63.0",
+		"jest": "^29.4.3",
+		"@babel/preset-env": "^7.20.2"
 	}
 }
