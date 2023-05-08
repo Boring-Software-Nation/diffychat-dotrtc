@@ -65,7 +65,7 @@ To install dependencies use
 
     npm i
 
-Rollup is used to build the test page (конфиг: https://github.com/Belsoft-rs/diffychat-dotrtc/blob/main/demo/rollup.config.js)
+Rollup is used to build the test page (config: https://github.com/Belsoft-rs/diffychat-dotrtc/blob/main/demo/rollup.config.js)
 
     rollup -c ./rollup.config.js
 
