@@ -1,5 +1,5 @@
-import Blockchain from './blockchain.js';
-import {Peer} from './Peer.js';
+import Blockchain from './Blockchain.js';
+import Peer from './Peer.js';
 import {Keyring} from "@polkadot/api";
 
 const peers = {};
@@ -23,7 +23,7 @@ const DOTRTC = class DOTRTC {
 		this.peers = {};
 		if (!cfg.iceServer) {
 			cfg.iceServer = {
-				urls: 'stun:stun2.l.google.com:19302'
+				urls: 'stun:stun.ideasip.com'
 			};
 		}
 		this.#cfg = cfg;

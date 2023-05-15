@@ -1,4 +1,4 @@
-import {PeerChannel} from './PeerChannel.js';
+import PeerChannel from './PeerChannel.js';
 import State from "states-manager";
 import wrtc from 'wrtc';
 import {atob, btoa} from 'abab';
@@ -138,4 +138,4 @@ let Peer = class Peer {
 	}
 };
 
-export {Peer};
+export default Peer;

@@ -8,7 +8,7 @@ You can create a DOTRTC instance with the necessary settings and specify event h
 
     const p2p = new DOTRTC({
         iceServer:      string,                 //Stun or turn server (https://datatracker.ietf.org/doc/html/rfc8445), example: `stun:stun.services.mozilla.com`
-        endpoint:       string                  //Endpoint of parachain node, for example `wss://diffy.belsoft.rs/`
+        endpoint:       string                  //Endpoint of parachain node, for example `wss://diffy.bsn.si`
         phrase:         string,                 //Secret phrase
         onConnectionRequest: function() {...}   //Handler that will be called when someone tries to connect to you
         onConnect: function() {...}             //Handler that will be called when a connection is successfully established with someone
@@ -53,11 +53,11 @@ The `channel` object has the following methods:
 
 The repository contains a demo page (in the `/demo` directory) that demonstrates the operation of the DotRTC library
 
-This demo page uses a substrate deployed at `wss://diffy.belsoft.rs/`.
+This demo page uses a substrate deployed at `wss://diffy.bsn.si`.
 Test users alice (private key `//Alice`) and bob (private key `//Bob`) are already registered in this parachain.
 If you want to launch a page with your own parachain, then when initializing DotRTC (https://github.com/Belsoft-rs/diffychat-dotrtc/blob/main/demo/index.js#L28) you need to add the `endpoint` parameter with the address parachain nodes, for example:
 
-    endpoint: 'wss://diffy.belsoft.rs/'
+    endpoint: 'wss://diffy.bsn.si/'
 
 ## Demo build
 
@@ -65,7 +65,7 @@ To install dependencies use
 
     npm i
 
-Rollup is used to build the test page (config: https://github.com/Belsoft-rs/diffychat-dotrtc/blob/main/demo/rollup.config.js)
+Rollup is used to build the test page (конфиг: https://github.com/Belsoft-rs/diffychat-dotrtc/blob/main/demo/rollup.config.js)
 
     rollup -c ./rollup.config.js
 

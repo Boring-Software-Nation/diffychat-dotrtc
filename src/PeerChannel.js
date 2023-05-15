@@ -42,23 +42,34 @@ const PeerChannel = class PeerChannel {
 			}
 		};
 		this.channel.onmessage = e => {
-			//console.warn('[Peer channel] receive msg:', e.data);
-			let frame = new BinData(e.data);
-			let messageId = frame.getUint32();
-			let blockNum = frame.getUint32();
-			let blocksCount = frame.getUint32();
-			let payload = frame.getBuffer();
-			//console.log('%c[PeerChannel.in] receive frame, messageId:', 'background:cyan;color:black', messageId);
-			PeerChannelMessage.get({
-				channel: this,
-				id: messageId,
-				blocksCount: blocksCount,
-				onLoad: (msg) => {
-					if (this.#onMessage) {
-						this.#onMessage(msg);
-					}
+			//console.warn('[Peer channel] receive msg:', e);
+			(new Promise((next) => {
+				if (e.data instanceof Blob) {
+					e.data.arrayBuffer().then(data => {
+						next(data);
+					})
+				} else {
+					next(e.data);
 				}
-			}).frameSet(blockNum, payload);
+			})).then(data => {
+				//console.warn('[Peer channel] receive data:', data);
+				let frame = new BinData(data);
+				let messageId = frame.getUint32();
+				let blockNum = frame.getUint32();
+				let blocksCount = frame.getUint32();
+				let payload = frame.getBuffer();
+				//console.log('%c[PeerChannel.in] receive frame, messageId:', 'background:cyan;color:black', messageId, 'frame:', frame);
+				PeerChannelMessage.get({
+					channel: this,
+					id: messageId,
+					blocksCount: blocksCount,
+					onLoad: (msg) => {
+						if (this.#onMessage) {
+							this.#onMessage(msg);
+						}
+					}
+				}).frameSet(blockNum, payload);
+			});
 		};
 	}
 
@@ -162,4 +173,4 @@ const PeerChannelMessage = class PeerChannelMessage {
 	static FRAME_PAYLOAD_SIZE = 16 * 1024;		//Size of frame
 };
 
-export {PeerChannel};
+export default PeerChannel;

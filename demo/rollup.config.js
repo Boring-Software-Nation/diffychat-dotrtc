@@ -1,6 +1,6 @@
 import commonjs from '@rollup/plugin-commonjs';
 import {nodeResolve as resolve} from '@rollup/plugin-node-resolve';
-//import uglify from '@lopatnov/rollup-plugin-uglify';
+import uglify from '@lopatnov/rollup-plugin-uglify';
 
 export default {
 	input: './index.js',
@@ -26,6 +26,6 @@ export default {
 			browser: true
 		}),
 		commonjs(),
-		//uglify()
+		uglify()
 	]
 };
