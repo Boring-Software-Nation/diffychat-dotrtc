@@ -76,3 +76,9 @@ To run use html file (https://github.com/Belsoft-rs/diffychat-dotrtc/blob/main/d
 For ease of viewing and testing, this page has already been deployed on github pages and is available at:
 
     https://belsoft-rs.github.io/diffychat/
+
+## Unit test
+
+To run unit tests, use command
+
+    npm test
