@@ -1,6 +1,7 @@
 import Blockchain from './Blockchain.js';
 import Peer from './Peer.js';
 import {Keyring} from "@polkadot/api";
+import {cryptoWaitReady} from '@polkadot/util-crypto';
 
 const peers = {};
 
@@ -28,53 +29,74 @@ const DOTRTC = class DOTRTC {
 		}
 		this.#cfg = cfg;
 
-		const srKeyring = new Keyring({type: 'sr25519'});
-		const accountSrKeyring = srKeyring.addFromUri(cfg.phrase);
-		const edKeyring = new Keyring({type: 'ed25519'});
-		const accountEdKeyring = edKeyring.addFromUri(cfg.phrase);
+		this.onReady().then(() => {
+			const srKeyring = new Keyring({type: 'sr25519'});
+			const accountSrKeyring = srKeyring.addFromUri(cfg.phrase);
+			const edKeyring = new Keyring({type: 'ed25519'});
+			const accountEdKeyring = edKeyring.addFromUri(cfg.phrase);
 
-		this.#bConn = new Blockchain({
-			srKeyring: accountSrKeyring,
-			edKeyring: accountEdKeyring,
-			endpoint: cfg.endpoint || 'wss://diffy.bsn.si/'
-		});
-
-		/*
-		* On offer event. If the gateway sent someone an offer to connect, we accept it and send our localOffer
-		*/
-		this.#bConn.onOffer(offerCfg => {
-			let peer = new Peer({												// This is the peer trying to connect to us
-				remoteAddress: offerCfg.from,
-				iceServer: cfg.iceServer
+			this.#bConn = new Blockchain({
+				srKeyring: accountSrKeyring,
+				edKeyring: accountEdKeyring,
+				phrase: cfg.phrase,
+				endpoint: cfg.endpoint || 'wss://diffy.bsn.si/'
 			});
 
-			cfg.onConnectionRequest({
-				remoteAddress: offerCfg.from,
-				accept: () => {
-					peer.onReady(() => {
-						cfg.onConnect(peer.systemChannel);
-					});
-					peer.offerAccept(offerCfg.offer).then((offerLocal) => {
-						this.#bConn.createAnswer({
-							to: offerCfg.from,
-							offer: offerLocal
+			console.log('this:', this);
+			/*
+			* On offer event. If the gateway sent someone an offer to connect, we accept it and send our localOffer
+			*/
+			this.#bConn.onOffer(offerCfg => {
+				console.log('onoffer:', offerCfg);
+				let peer = new Peer({												// This is the peer trying to connect to us
+					remoteAddress: offerCfg.fromSr,
+					iceServer: cfg.iceServer
+				});
+
+				cfg.onConnectionRequest({
+					remoteAddress: offerCfg.from,
+					remoteAddressSr: offerCfg.fromSr,
+					welcomeMsg: offerCfg.welcomeMsg,
+					accept: () => {
+						peer.onReady(() => {
+							cfg.onConnect(peer.systemChannel);
 						});
-					});
-				}
+						peer.offerAccept(offerCfg.offer).then((offerLocal) => {
+							this.#bConn.createAnswer({
+								to: offerCfg.from,
+								offer: offerLocal
+							});
+						});
+					}
+				});
 			});
-		});
 
-		this.#bConn.onAnswer(answer => {
-			const peer = peers[answer.from];			//from(ed)
-			peer.offerAccept(answer.offer);
-			peer.onReady(() => {
-				cfg.onConnect(peer.systemChannel);
+			this.#bConn.onAnswer(answer => {
+				console.log('[dotrtc] onAnswer:', answer, peers);
+				const peer = peers[answer.from];			//from(ed)
+				peer.offerAccept(answer.offer);
+				peer.onReady(() => {
+					cfg.onConnect(peer.systemChannel);
+				});
 			});
 		});
 	}
 
+	onReady() {
+		return cryptoWaitReady();
+	}
+
+	/**
+	 * @description get sr25519 address by username
+	 * @param addr
+	 * @return {*}
+	 */
 	getUsername(addr) {
 		return this.#bConn.getUsername(addr);
+	}
+
+	getAddress(username) {
+		return this.#bConn.getAddress(username);
 	}
 
 	register(username) {
@@ -83,16 +105,33 @@ const DOTRTC = class DOTRTC {
 		return this.#bConn.register(username, accountEdKeyring);
 	}
 
+	getContactList() {
+		return this.#bConn.getContactList();
+	}
+
+	addContact(username, address) {
+		return this.#bConn.addContact(username, address);
+	}
+
 	/**
-	 * @param cfg		{Object}
-	 * @param cfg.to	{String}		// username
+	 * @param cfg				{Object}
+	 * @param cfg.to			{String}		// username
+	 * @param cfg.toAddress		{String=}		// username
+	 * @param cfg.welcomeMsg	{String=}		// welcome message
 	 * @return {Promise<unknown>}
 	 */
 	connect(cfg) {
 		//console.warn('[DOTRTC] connect:', cfg);
 		return new Promise(done => {
-
-			this.#bConn.getAddress(cfg.to).then(addr => {			//addr(ed)
+			new Promise(resolve => {
+				if (cfg.toAddress) {
+					resolve(cfg.toAddress);
+				} else {
+					this.#bConn.getAddress(cfg.to).then(addr => {			//addr(ed)
+						resolve(addr);
+					});
+				}
+			}).then(addr => {
 				console.log('connect to: ', addr);
 				if (peers[addr]) {					// If there is already a feast, then we wait until the connection is established and then we return it
 					//console.warn('[DOTRTC] Get peer. Waiting ready state...');
@@ -115,7 +154,7 @@ const DOTRTC = class DOTRTC {
 						this.#bConn.createOffer({
 							to: addr,
 							offer: localOffer,
-							welcomeMsg: 'helloTest'
+							welcomeMsg: cfg.welcomeMsg || 'hello'
 						});
 					});
 				}
