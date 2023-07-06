@@ -82,3 +82,7 @@ For ease of viewing and testing, this page has already been deployed on github p
 To run unit tests, use command
 
     npm test
+
+## Demo video
+
+[![Delivery vid pic ms1](https://user-images.githubusercontent.com/126072104/232100957-aa315c8c-2c3f-440e-b2d3-0c2055c47eaf.jpg)](https://media.belsoft.rs/diffychat/diffy.mp4)
