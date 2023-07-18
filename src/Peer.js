@@ -9,15 +9,18 @@ let Peer = class Peer {
 	#pc;						// peerConnection
 	#readyState = new State();	// State of connection
 	#master = false;			// Equals true if this peer is the connection initiator
+	#onDisconnect;
 
 	/**
 	 * @constructor
 	 * @param cfg				{Object}
 	 * @param cfg.remoteAddress	{String}	// The address of the peer with which the connection is established
 	 * @param cfg.iceServer		{Object}	// {urls}
+	 * @param cfg.onDisconnect	{Function}	// onDisconnect handler
 	 */
 	constructor(cfg) {
 		this.remoteAddress = cfg.remoteAddress;
+		this.#onDisconnect = cfg.onDisconnect;
 		this.#pc = new wrtc.RTCPeerConnection({
 			iceServers: [
 				cfg.iceServer
@@ -133,6 +136,8 @@ let Peer = class Peer {
 				channel: cfg.channel
 			}, () => {
 				done(channel);
+			}, () => {
+				this.#onDisconnect(channel);
 			});
 		});
 	}

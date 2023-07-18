@@ -24,7 +24,7 @@ const DOTRTC = class DOTRTC {
 		this.peers = {};
 		if (!cfg.iceServer) {
 			cfg.iceServer = {
-				urls: 'stun:stun.ideasip.com'
+				urls: ['stun:stun4.l.google.com:19302']
 			};
 		}
 		this.#cfg = cfg;
@@ -42,15 +42,21 @@ const DOTRTC = class DOTRTC {
 				endpoint: cfg.endpoint || 'wss://diffy.bsn.si/'
 			});
 
-			console.log('this:', this);
+			//console.log('this:', this);
 			/*
 			* On offer event. If the gateway sent someone an offer to connect, we accept it and send our localOffer
 			*/
 			this.#bConn.onOffer(offerCfg => {
-				console.log('onoffer:', offerCfg);
+				//console.log('onoffer:', offerCfg);
 				let peer = new Peer({												// This is the peer trying to connect to us
 					remoteAddress: offerCfg.fromSr,
-					iceServer: cfg.iceServer
+					iceServer: cfg.iceServer,
+					onDisconnect: (channel) => {
+						//console.log('Onclose:', channel);
+						if (this.#cfg.onDisconnect) {
+							this.#cfg.onDisconnect(channel);
+						}
+					}
 				});
 
 				cfg.onConnectionRequest({

@@ -1,7 +1,7 @@
 {
 	"name": "dotrtc",
 	"author": "Belsoft",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "DOTRTC library for establishing p2p communication and data transfer between two Polkadot wallets",
 	"main": "./src/DOTRTC.js",
 	"scripts": {

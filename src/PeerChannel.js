@@ -12,8 +12,9 @@ const PeerChannel = class PeerChannel {
 	 * @param cfg.remoteAddress		{String}			// The address of the peer with which the connection is established
 	 * @param cfg.channel			{RTCDataChannel}	// Existed RTC data channel
 	 * @param onOpen				{Function=}			// Called when a port is opened
+	 * @param onClose				{Function=}			// Called when a port is opened
 	 */
-	constructor(cfg, onOpen) {
+	constructor(cfg, onOpen, onClose) {
 		this.pc = cfg.pc;
 		this.messages = {};
 		this.messageId = 1;
@@ -34,7 +35,12 @@ const PeerChannel = class PeerChannel {
 		}
 
 		//this.channel.onclose = (e) => console.log('[PeerChannel] dc has closed', e);
-		this.channel.onerror = (e) => console.log('[PeerChannel] dc has onerror', e);
+		this.channel.onerror = (e) => {
+			console.log('[PeerChannel] dc has onerror', e, onClose);
+			if (onClose) {
+				onClose(this);
+			}
+		}
 		this.channel.onopen = () => {
 			//console.log('[PeerChannel] channel has opened');
 			if (onOpen) {
