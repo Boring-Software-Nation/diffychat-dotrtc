@@ -1,4 +1,4 @@
-![Diffy chat pic narrow](https://github.com/Boring-Software-Nation/diffychat-dotrtc/assets/126072104/636122af-c915-48e2-b52d-b7b2874986f5)
+![Diffy chat pic narrow](https://github.com/Belsoft-rs/diffychat-dotrtc/assets/126072104/636122af-c915-48e2-b52d-b7b2874986f5)
 
 # Intro
 
